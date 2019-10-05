@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 kafka-python = "*"
 psycopg2 = "*"
+validationschema = "*"
+jsonschema = "*"
 
 [requires]
 python_version = "3.7"

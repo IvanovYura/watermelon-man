@@ -19,10 +19,8 @@ class DB:
                 'port': port,
                 'user': user,
                 'password': password,
+                'dbname': dbname
             }
-            if dbname:
-                params['dbname'] = dbname
-
             self._conn = connect(**params)
 
         return self._conn

@@ -17,4 +17,6 @@ class Config:
     DB_USER = os.environ.get('DB_USER', 'topic_1')
     DB_PASSWORD = os.environ.get('DB_PASSWORD', 'topic_1')
 
-    METRICS_BATCH_SIZE = 10
+    METRICS_BATCH_SIZE = os.environ.get('METRICS_BATCH_SIZE', 10)
+
+    KEYS_DIRECTORY = os.environ.get('KEYS_DIRECTORY')

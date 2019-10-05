@@ -1,16 +1,25 @@
 import json
 
 from kafka import KafkaConsumer
-from datetime import datetime
 from core.config import Config
+from core.consumer_utils import write_metrics_to_db
 from core.db.database import db
-from core.db.queries import insert_metrics
+from core.db.queries import create_table
 from core.logger import logger
+
+keys_directory = Config.KEYS_DIRECTORY
+
+if not keys_directory:
+    raise RuntimeError('Directory for SSL keys is not specified by KEYS_DIRECTORY')
 
 consumer = KafkaConsumer(
     Config.KAFKA_TOPIC,
     bootstrap_servers=Config.KAFKA_BROKER_URL,
     value_deserializer=lambda value: json.loads(value.decode(Config.ENCODING)),
+    security_protocol='SSL',
+    ssl_cafile=f'{keys_directory}/ca.pem',
+    ssl_certfile=f'{keys_directory}/service.cert',
+    ssl_keyfile=f'{keys_directory}/service.key',
 )
 
 if __name__ == '__main__':
@@ -22,28 +31,10 @@ if __name__ == '__main__':
             Config.DB_USER,
             Config.DB_PASSWORD,
         )
-        metrics = []
-        counter = 0
-        inserted = False
-        for message in consumer:
 
-            message = message.value
-            message['timestamp'] = datetime.fromtimestamp(message['timestamp'])
-            message['metrics'] = json.dumps(message['metrics'])
+        create_table(connection)
 
-            logger.info(f'Get message: {message}')
-
-            if counter < Config.METRICS_BATCH_SIZE:
-                metrics.append(message)
-                counter += 1
-                break
-
-            insert_metrics(connection, metrics)
-            inserted = True
-            counter = 0
-
-        if metrics and not inserted:
-            insert_metrics(connection, metrics)
+        write_metrics_to_db(connection, consumer)
 
     except KeyboardInterrupt:
         logger.info('\nExit') & exit(0)
