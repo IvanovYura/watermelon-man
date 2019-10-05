@@ -11,3 +11,6 @@ class Config:
     KAFKA_BROKER_URL = os.environ.get('KAFKA_BROKER_URL', f'{HOST_IP}:9092')
 
     KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC', 'topic_1')
+
+    # directory to put keys
+    KEYS_DIRECTORY = os.environ.get('KEYS_DIRECTORY')

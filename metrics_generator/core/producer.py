@@ -14,6 +14,8 @@ ap.add_argument('--disk-path', required=False, help='disk path from where to col
 ap.add_argument('--memory', required=False, action='append', help='memory metrics to collect')
 ap.add_argument('--interval', required=False, help='metrics gathering interval. 2 seconds is not specified')
 
+keys_directory = Config.KEYS_DIRECTORY
+
 
 def _get_kafka_producer() -> KafkaProducer:
     """
@@ -23,9 +25,17 @@ def _get_kafka_producer() -> KafkaProducer:
     see kafka-console-consumer.sh for additional details.
     """
     try:
+        if not keys_directory:
+            raise RuntimeError('Directory for SSL keys is not specified by KEYS_DIRECTORY')
+
         return KafkaProducer(
             bootstrap_servers=Config.KAFKA_BROKER_URL,
             value_serializer=lambda value: json.dumps(value).encode(Config.ENCODING),
+            security_protocol='SSL',
+            ssl_cafile=f'{keys_directory}/ca.pem',
+            ssl_certfile=f'{keys_directory}/service.cert',
+            ssl_keyfile=f'{keys_directory}/service.key',
+            api_version=(1, 0, 0),
         )
     except NoBrokersAvailable:
         logger.error('Kafka subscriber/consumer was not set up') & exit(42)

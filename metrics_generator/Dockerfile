@@ -15,6 +15,8 @@ RUN pipenv install --system --deploy
 
 COPY /core /core/
 COPY /test /test/
+# do not forget to put your keys here
+COPY /keys /keys
 
 WORKDIR /core
 
