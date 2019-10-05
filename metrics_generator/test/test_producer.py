@@ -16,8 +16,13 @@ class ProducerTest(TestCase):
         args_list = kafka_producer_mock.call_args_list
         args = args_list[0][1]
         self.assertEqual(args['bootstrap_servers'], Config.KAFKA_BROKER_URL)
-        # make sure value_serializer is in arguments
+        # check arguments
         self.assertIn('value_serializer', args)
+        self.assertIn('security_protocol', args)
+        self.assertIn('ssl_cafile', args)
+        self.assertIn('ssl_certfile', args)
+        self.assertIn('ssl_keyfile', args)
+        self.assertIn('api_version', args)
 
     @mock.patch('core.producer.logger')
     @mock.patch('core.producer.KafkaProducer', side_effect=NoBrokersAvailable)

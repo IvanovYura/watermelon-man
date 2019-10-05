@@ -43,7 +43,6 @@ def write_metrics_to_db(conn: connection, consumer: KafkaConsumer):
     """
     metrics = []
     counter = 0
-    inserted = False
 
     for message in consumer:
 
@@ -56,14 +55,15 @@ def write_metrics_to_db(conn: connection, consumer: KafkaConsumer):
 
         logger.info(f'Get message: {message}')
 
+        # metrics mill be added to DB based on specified batch size, 10 by default
         if counter < Config.METRICS_BATCH_SIZE:
             metrics.append(message)
             counter += 1
             continue
 
         insert_metrics(conn, metrics)
-        inserted = True
+        metrics.clear()
         counter = 0
 
-    if metrics and not inserted:
+    if metrics:
         insert_metrics(conn, metrics)
