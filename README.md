@@ -18,7 +18,8 @@ python metrics_generator/core/producer.py --help
 ## How to run
 
 1. Specify environment variables. See the [Development](#development) section.
-2. Run the command:
+2. Add all Kafka keys to `keys` directory.
+3. Run the command:
 ```shell
 doker-compose -f docker-compose.yml up
 ```
@@ -72,6 +73,8 @@ To check that messages are really sent to Kafka (for example if there is not Con
 kafka-console-consumer.sh --topic <topic_name> --bootstrap-server localhost:9092
 ```
 Where `<topic_name>` is the topic specified to send messages by Porducer.
+
+NOTE: do not forget to place all keys to keys directory in the root.
 
 ## Testing
 
