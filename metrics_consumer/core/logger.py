@@ -1,17 +1,21 @@
-import logging
+from logging import Logger, getLogger, StreamHandler, INFO, Formatter
 import sys
 
+LOG_FORMAT_SHORT = "%(levelname)s\t%(message)s"
 
-def init_logger(level: int, handler: logging.StreamHandler) -> logging.Logger:
+
+def init_logger(level: int, handler: StreamHandler) -> Logger:
     """
     Returns logger with output to STDOUT
     """
-    logger = logging.getLogger()
+    logger = getLogger()
     logger.setLevel(level)
 
     logger.addHandler(handler)
+    formatter = Formatter(LOG_FORMAT_SHORT)
+    handler.setFormatter(formatter)
 
     return logger
 
 
-logger = init_logger(logging.INFO, logging.StreamHandler(sys.stdout))
+logger = init_logger(INFO, StreamHandler(sys.stdout))

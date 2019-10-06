@@ -48,16 +48,16 @@ def write_metrics_to_db(conn: connection, consumer: KafkaConsumer):
 
         message = message.value
 
-        _validate_message(message)
-
-        message['timestamp'] = datetime.fromtimestamp(message['timestamp'])
-        message['metrics'] = json.dumps(message['metrics'])
-
         logger.info(f'Get message: {message}')
+
+        _validate_message(message)
 
         # metrics mill be added to DB based on specified batch size, 10 by default
         if counter < Config.METRICS_BATCH_SIZE:
-            metrics.append(message)
+            metrics.append({
+                'timestamp': datetime.fromtimestamp(message['timestamp']),
+                'metrics': json.dumps(message['metrics']),
+            })
             counter += 1
             continue
 

@@ -4,14 +4,18 @@ from datetime import datetime
 from kafka.errors import NoBrokersAvailable
 
 from core.config import Config
-from core.producer import generate_message, _get_kafka_producer, send_message
+from core.producer import generate_message, Producer
 
 
 class ProducerTest(TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        Config.KEYS_DIRECTORY = 'keys'
+
     @mock.patch('core.producer.KafkaProducer')
     def test__init_producer(self, kafka_producer_mock):
-        _get_kafka_producer()
+        producer = Producer()
 
         args_list = kafka_producer_mock.call_args_list
         args = args_list[0][1]
@@ -29,7 +33,7 @@ class ProducerTest(TestCase):
     def test__init_producer_broker_not_specified_fail(self, kafka_producer_mock, logger_mock):
         # exit when no broker available
         with self.assertRaises(SystemExit) as cm:
-            _get_kafka_producer()
+            Producer()
 
         logger_mock.error.assert_called_with('Kafka subscriber/consumer was not set up')
         self.assertEqual(cm.exception.code, 42)
@@ -63,7 +67,7 @@ class ProducerTest(TestCase):
 
         msg = generate_message(args)
 
-        producer = _get_kafka_producer()
-        send_message(producer, msg)
+        producer = Producer()
+        producer.send_message(msg)
 
         send_method.assert_called_with(Config.KAFKA_TOPIC, value=msg)

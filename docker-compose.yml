@@ -23,5 +23,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     volumes:
     - ./keys/:/keys/
+    depends_on:
+    - producer
 
 

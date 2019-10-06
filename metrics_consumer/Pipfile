@@ -4,11 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+coverage = "*"
 
 [packages]
 kafka-python = "*"
 psycopg2 = "*"
-validationschema = "*"
 jsonschema = "*"
 
 [requires]
