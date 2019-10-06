@@ -17,7 +17,7 @@ python metrics_generator/core/producer.py --help
 
 ## How to run
 
-1. Specify environment variables. See the [Development](##development) section.
+1. Specify environment variables. See the [Development](#development) section.
 2. Run the command:
 ```shell
 doker-compose -f docker-compose.yml up
