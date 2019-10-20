@@ -7,8 +7,10 @@ verify_ssl = true
 coverage = "*"
 
 [packages]
-psutil = "*"
 kafka-python = "*"
+psycopg2 = "*"
+jsonschema = "*"
+psutil = "*"
 
 [requires]
 python_version = "3.7"

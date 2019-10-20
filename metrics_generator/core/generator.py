@@ -53,23 +53,6 @@ class MetricsGenerator:
         }
         return {'memory': memory_metrics} if memory_metrics else {}
 
-    def _get_disk_usage_metrics(self) -> dict:
-        """
-        Returns disk usage metrics dictionary based on disk metrics to collect:
-        see disk_usage__metrics_to_collect() method.
-        """
-        disk_usage_metrics = {
-            metric: disk_usage(self._path).__getattribute__(metric)
-            for metric in self._disk_usage_metrics
-        }
-        if not disk_usage_metrics:
-            return {}
-
-        disk_usage_metrics.update({
-            'path': self._path,
-        })
-        return {'disk': disk_usage_metrics}
-
     def memory_metrics_to_collect(self, *args):
         """
         Specified which memory metrics to collect:
@@ -89,25 +72,3 @@ class MetricsGenerator:
         if diff:
             raise ValueError(f'The type of memory metric is invalid: {diff}')
         self._memory_metrics.update(args)
-
-    def disk_usage_metrics_to_collect(self, *args, path: str = None):
-        """
-        Specified which disk usage metrics to collect in specified path:
-
-        - used:
-            used memory in bytes in specified path
-
-        - free:
-            free memory in bytes
-
-        - percent:
-            used memory in percent
-
-        If path is not specified, default root directory is used.
-        """
-        self._path = path if path else DEFAULT_PATH
-
-        diff = set(args) - DISK_USAGE_AVAILABLE_METRICS
-        if diff:
-            raise ValueError(f'The type of disk usage metric is invalid: {diff}')
-        self._disk_usage_metrics.update(args)
