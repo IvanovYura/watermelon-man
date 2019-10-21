@@ -13,7 +13,8 @@ class DiskMetrics(BaseMetrics):
         """
         Returns disk usage metrics dictionary.
         """
-        cls.validate(args)
+        if args:
+            cls.validate(args)
 
         path = kwargs.get('path') or cls.DEFAULT_PATH
 

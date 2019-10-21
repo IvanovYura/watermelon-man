@@ -13,7 +13,7 @@ class ProducerTest(TestCase):
     def setUpClass(cls):
         Config.KEYS_DIRECTORY = 'keys'
 
-    @mock.patch('core.producer.KafkaProducer')
+    @mock.patch('core.publisher.KafkaProducer')
     def test__init_producer(self, kafka_producer_mock):
         producer = Producer()
 
@@ -28,8 +28,8 @@ class ProducerTest(TestCase):
         self.assertIn('ssl_keyfile', args)
         self.assertIn('api_version', args)
 
-    @mock.patch('core.producer.logger')
-    @mock.patch('core.producer.KafkaProducer', side_effect=NoBrokersAvailable)
+    @mock.patch('core.publisher.logger')
+    @mock.patch('core.publisher.KafkaProducer', side_effect=NoBrokersAvailable)
     def test__init_producer_broker_not_specified_fail(self, kafka_producer_mock, logger_mock):
         # exit when no broker available
         with self.assertRaises(SystemExit) as cm:
@@ -42,7 +42,7 @@ class ProducerTest(TestCase):
     @mock.patch('core.generator.cpu_percent')
     @mock.patch('core.generator.disk_usage')
     @mock.patch('core.generator.virtual_memory')
-    @mock.patch('core.producer.KafkaProducer')
+    @mock.patch('core.publisher.KafkaProducer')
     def test__send_producer_with_message(
             self,
             kafka_producer_mock,

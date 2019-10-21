@@ -1,8 +1,8 @@
 version: '3'
 services:
   producer:
-    build: ./metrics_generator/
-    command: python producer.py --disk used --disk free --memory available
+    build: publisher/
+    command: python publisher.py --disk used --disk free --memory available
     environment:
       KAFKA_BROKER_URL: ${KAFKA_BROKER_URL}
       KAFKA_TOPIC: ${KAFKA_TOPIC}
